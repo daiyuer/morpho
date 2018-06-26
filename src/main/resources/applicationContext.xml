@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:cxf="http://cxf.apache.org/core" xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.2.xsd
+	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+	http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+	 http://www.springframework.org/schema/task
+ 	 http://www.springframework.org/schema/task/spring-task.xsd
+	">
+	
+	
+	<!-- 引入其他spring的配置模块   注意注入顺序 被依赖的在前边-->
+	<!-- spring cache缓存配置 底层用ehcache实现 -->
+	<import resource="spring/applicationContext-ehcache.xml"/>
+	<!-- redis模块   不使用时注释掉  避免可能因配置文件参数本身就不正确连接不上而报错启动不了-->
+	<!-- <import resource="spring/applicationContext-redis.xml"/> -->
+	<!-- ip地址搜索器 -->
+	<import resource="spring/applicationContext-ip2region.xml"/>
+	<!-- spring aop -->
+	<import resource="spring/applicationContext-aop.xml"/>
+	<!-- mybatis -->
+	<import resource="spring/applicationContext-mybatis.xml"/>
+	<!-- hibernate -->
+	<import resource="spring/applicationContext-hibernate.xml"/>
+	<!-- shiro redis 管理session 分布式session 
+		如果使用这个 请确保spring/applicationContext-redis.xml同时生效-->
+	<!-- <import resource="spring/applicationContext-shiro-redis.xml"/> -->
+	<!-- shiro 管理session 本地session -->
+	<import resource="spring/applicationContext-shiro-ehcache.xml"/>
+	<!-- webservice相关配置 cxf具体实现 -->
+	<import resource="spring/applicationContext-cxf.xml"/>
+	<!--ureport2报表引擎-->
+	<import resource="classpath:ureport-console-context.xml" />
+	<!-- uflo2流程引擎 -->
+	<import resource="classpath:uflo-console-context.xml" />
+	<!-- urule2的spring配置文件 -->
+	<import resource="classpath:urule-console-context.xml"/>
+	
+	
+	<!-- spring提供的邮件发送器 更复杂的需求可以使用本项目util.mail下的工具类 -->
+	<!-- <import resource="spring/applicationContext-email.xml"/> -->
+	
+	<!-- javamelody监控Spring bean的整合 需要和  id= "facadeMonitoringAdvisor"的bean配合使用-->
+	<!-- 如果你的所有spring管理的bean没有实现接口,需要引入这个配置文件(这样将使用cglib代理) 否则会出错 -->
+	<import resource="classpath:net/bull/javamelody/monitoring-spring-aspectj.xml" />
+	
+	
+	<!-- 支持异步方法执行在spring 3.x之后，就已经内置了@Async 异常处理和事务控制请在您理解的前提下正确使用-->
+	<!-- 
+		<task:executor />配置参数：
+		id：当配置多个executor时，被@Async("id")指定使用；也被作为线程名的前缀。
+		pool-size：
+		core size：最小的线程数，缺省：1
+		max size：最大的线程数，缺省：Integer.MAX_VALUE
+		queue-capacity：当最小的线程数已经被占用满后，新的任务会被放进queue里面，当这个queue的capacity也被占满之后，pool里面会创建新线程处理这个任务，直到总线程数达到了max size，这时系统会拒绝这个任务并抛出TaskRejectedException异常（缺省配置的情况下，可以通过rejection-policy来决定如何处理这种情况）。缺省值为：Integer.MAX_VALUE
+		keep-alive：超过core size的那些线程，任务完成后，再经过这个时长（秒）会被结束掉
+		rejection-policy：当pool已经达到max size的时候，如何处理新任务
+		ABORT（缺省）：抛出TaskRejectedException异常，然后不执行
+		DISCARD：不执行，也不抛出异常
+		DISCARD_OLDEST：丢弃queue中最旧的那个任务
+		CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行
+	 -->
+	<task:executor id="asyncExecutor" pool-size="5"/>  
+	<task:annotation-driven executor="asyncExecutor"/>  
+
+	<!--  quartz任务调度模块  可以用 需要的话放开配置 -->
+	<import resource="spring/applicationContext-quartz.xml"/>
+
+	<!-- 开启AOP监听 只对当前配置文件有效 -->
+	<!-- <aop:aspectj-autoproxy 
+		/>有一个proxy-target-class属性，默认为false，表示使用jdk动态代理织入增强，当配为<aop:aspectj-autoproxy  
+		poxy-target-class="true"/>时，表示使用CGLib动态代理技术织入增强。不过即使proxy-target-class设置为false，如果目标类没有声明接口，则spring将自动使用CGLib动态代理。 
+	 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+    
+    <!--javamelody监控Spring bean的整合 通过AOP监控Spring bean的方法 -->
+    <bean id= "facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor" >
+         <property name ="pointcut" >
+                 <bean class="org.springframework.aop.support.JdkRegexpMethodPointcut" >
+                         <property name ="pattern" value="com.max256.*.*" />
+                         <!--正则表达式　com.max256.*.* 意思是对应com.max256.*.*包下的所有类的所有方法-->
+                 </bean>
+         </property>
+	</bean>
+
+
+	<!-- 引入项目配置文件classpath:config.properties -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >  
+		<!-- systemPropertiesModeName意味着可以从jvm虚拟机的参数中获得配置信息 -->
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"></property>
+		<!-- 数小代表优先级高 这里要高过 uflo和ureport的优先级 他们的值是100 我们的值才可以覆盖他们-->
+		<property name="order" value="1"/>
+		<!-- 当这个文件不存在时忽略，我们这里不忽略，当系统在启动时缺少东西报错要比运行中保存更好 -->
+        <!-- <property name="ignoreUnresolvablePlaceholders" value="true" /> -->
+		<property name="locations">  
+			<list>  
+                 <value>classpath:config.properties</value>  
+            </list>  
+        </property>  
+        
+	</bean> 
+
+
+	<!-- 组件扫描不扫描controller层  这层交由springMVC单独扫描-->
+	<context:component-scan base-package="com.max256.morpho">
+   		 <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+	<!-- 这个工具类目前仅用于shiro标签库的属性注入使用 特此标记 -->
+	<bean class="com.max256.morpho.common.util.SpringUtils"/>
+	
+	<!-- springfox配置类加入ioc容器 -->
+	<bean class="com.max256.morpho.common.config.SpringfoxConfig"/>  
+
+</beans>
