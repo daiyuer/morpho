@@ -53,8 +53,8 @@
                             </a>
                             <!-- 点击头像 触发的用户相关信息 -->
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                               
-                               
+
+
                                 <!-- 安全退出 -->
                                 <li><a href="javascript:changePassword()">修改密码</a>
                                 </li>

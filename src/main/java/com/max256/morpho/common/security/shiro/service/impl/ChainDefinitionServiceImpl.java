@@ -1,14 +1,13 @@
 package com.max256.morpho.common.security.shiro.service.impl;
 
+import com.max256.morpho.common.exception.SystemException;
+import com.max256.morpho.common.security.shiro.service.ChainDefinitionService;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-
 import javax.annotation.Resource;
-
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
@@ -19,9 +18,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.max256.morpho.common.exception.SystemException;
-import com.max256.morpho.common.security.shiro.service.ChainDefinitionService;
 
 /**
  *  ChainDefinitionServiceImpl
@@ -34,7 +30,7 @@ public class ChainDefinitionServiceImpl implements ChainDefinitionService{
 	@Resource
 	private ShiroFilterFactoryBean shiroFilterFactoryBean;
 	
-	/*
+	/**
 	 * 回车换行符
 	 */
 	private static final String CRLF = "\r\n";
@@ -44,18 +40,13 @@ public class ChainDefinitionServiceImpl implements ChainDefinitionService{
 	public String initFilterChainDefinitions() {
 		final StringBuilder chain = new StringBuilder();
 		Map<String, String> chainMap = initChainDefinitionsMap();
-		chainMap.forEach(new BiConsumer<String, String>() {
-			@Override
-			public void accept(String key, String value) {
-				chain.append(key).append(" = ").append(value).append(CRLF);
-			}
-		});
+		chainMap.forEach((key, value) -> chain.append(key).append(" = ").append(value).append(CRLF));
 		return chain.toString();
 	}
 
 	@Override
 	public synchronized void reloadFilterChainDefinitions() {
-		AbstractShiroFilter shiroFilter = null;
+		AbstractShiroFilter shiroFilter;
 		try {
 			shiroFilter = (AbstractShiroFilter) shiroFilterFactoryBean.getObject();
 

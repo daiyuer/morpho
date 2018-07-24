@@ -55,8 +55,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 	@Resource
 	private SysRoleService sysRoleService;
 
-	Logger log=LoggerFactory.getLogger(this.getClass());
-	/*
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+	/**
 	 * 登录成功事件
 	 */
 	@Override
@@ -138,7 +138,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 	}
 	
 	
-	/* 
+	/**
 	 * 当登录失败时 委托shiro 的realm进行登录失败后执行此方法	
 	 *  */
 	@Override

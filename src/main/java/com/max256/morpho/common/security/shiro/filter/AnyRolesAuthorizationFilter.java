@@ -14,9 +14,9 @@ import org.apache.shiro.web.filter.authz.AuthorizationFilter;
  */
 public class AnyRolesAuthorizationFilter extends AuthorizationFilter {
 
-	/* 
+	/**
 	 * 如果请求可以正常地进行过滤，则返回true;
-	 * 如果请求应该由onaccess否认(请求、响应、mappedValue)方法处理，则返回false。
+	 * 如果请求应该由onaccess否认(请求、响应、mappedValue)方法处理，则返回false.
 	 */
 	@Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)

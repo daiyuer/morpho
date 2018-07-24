@@ -1,18 +1,5 @@
 package com.max256.morpho.common.security.shiro.filter;
 
-import java.io.BufferedReader;
-import java.util.Date;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.web.filter.AccessControlFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.max256.morpho.common.config.Constants;
@@ -20,6 +7,15 @@ import com.max256.morpho.common.security.encrypt.Message;
 import com.max256.morpho.common.security.encrypt.ServerUtils;
 import com.max256.morpho.common.security.shiro.session.ShiroSessionDAO;
 import com.max256.morpho.common.util.NumberUtils;
+import java.io.BufferedReader;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 /**
  * 加解密拦截器
@@ -30,8 +26,6 @@ import com.max256.morpho.common.util.NumberUtils;
  */
 public class EncryptFilter extends AccessControlFilter {
 	
-	// 日志
-	//private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	ShiroSessionDAO shiroSessionDao;
 
@@ -128,7 +122,7 @@ public class EncryptFilter extends AccessControlFilter {
 		}
 		Long startTimeLong=Long.parseLong(startTime);
 		//更严格的时间对比策略
-		Long nowTime=new Date().getTime();//当前时间  服务器端时间
+		Long nowTime=System.currentTimeMillis();//当前时间  服务器端时间
 		Long sessionStartTime=session.getStartTimestamp().getTime();//因为session存在 所以肯定不会为null
 		//请求时间靠后(考虑到客户端可能与服务器有时间不同步 最多容纳5分钟)
 		if(startTimeLong>(nowTime+300000L)){

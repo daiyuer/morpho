@@ -26,11 +26,18 @@ import com.max256.morpho.common.util.JsonUtils;
  */
 public class CaptchaValidateFilter extends AccessControlFilter {
 
-	private boolean captchaEnable = Constants.CAPTCHA_ENABLED;// 是否开启验证码支持
-
-	private String requestCaptchaParam = Constants.REQUEST_CAPTCHA;// 前台提交的验证码参数名
-
-	private String captchaFailureKey = Constants.LOGIN_FAILURE_KEY; // 验证码验证失败后存储到的属性名
+	/**
+	 * 是否开启验证码支持
+	 */
+	private boolean captchaEnable = Constants.CAPTCHA_ENABLED;
+	/**
+	 * 前台提交的验证码参数名
+	 */
+	private String requestCaptchaParam = Constants.REQUEST_CAPTCHA;
+	/**
+	 * 验证码验证失败后存储到的属性名
+	 */
+	private String captchaFailureKey = Constants.LOGIN_FAILURE_KEY;
 
 	public String getCaptchaFailureKey() {
 		return captchaFailureKey;
@@ -48,7 +55,7 @@ public class CaptchaValidateFilter extends AccessControlFilter {
 
 		HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
 		// 2、判断验证码是否禁用 或不是表单提交（允许访问）
-		if (captchaEnable == false
+		if (!captchaEnable
 				|| !"post".equalsIgnoreCase(httpServletRequest.getMethod())) {
 			return true;
 		}
@@ -61,7 +68,7 @@ public class CaptchaValidateFilter extends AccessControlFilter {
 		return captchaEnable;
 	}
 
-	/*
+	/**
 	 * 当访问拒绝时在request域中放入错误消息
 	 */
 	@Override

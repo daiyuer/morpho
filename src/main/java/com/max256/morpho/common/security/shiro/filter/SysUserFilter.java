@@ -40,8 +40,8 @@ public class SysUserFilter extends AccessControlFilter {
 			if (subject == null) {
 				return true;
 			}
-			// 此处注意缓存 防止大量的查询db
-			SysUser user = (SysUser) subject.getPrincipal();// 这个返回的是SysUser
+			// 此处注意缓存 防止大量的查询db,这个返回的是SysUser
+			SysUser user = (SysUser) subject.getPrincipal();
 			if (user == null) {
 				// user不存在时
 				return true;
@@ -62,7 +62,7 @@ public class SysUserFilter extends AccessControlFilter {
 		}
 	}
 
-	/*
+	/**
 	 * 是否允许被访问
 	 */
 	@Override
@@ -99,8 +99,8 @@ public class SysUserFilter extends AccessControlFilter {
             subject.logout();
         }
 		//账号已被锁定
-		// 带参数转发
-        Map<String,String> param=new HashMap<String,String>();
+		//带参数转发
+		Map<String,String> param=new HashMap<>();
 		param.put(Constants.LOGIN_FAILURE_KEY, Constants.ACCOUNT_LOCKED);
 		WebUtils.issueRedirect(request, response, Constants.ERROR_PAGE_URL,param);
         //停止链式处理 本步骤已经重定向

@@ -37,7 +37,7 @@
 		cache: false,
 	    contentType:"application/x-www-form-urlencoded;charset=utf-8",
 	    complete:function(XMLHttpRequest,textStatus){
-	          if(XMLHttpRequest.status=="408"){
+	          if(XMLHttpRequest.status==="408"){
 	               //跳转错误页 提示超时
 	               window.location.replace('${ctx}/errorpage?shiroLoginFailure=0007');
 	       		}	

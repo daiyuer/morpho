@@ -50,7 +50,7 @@
 				<!-- 用户登录表单 -->
 				<form method="post" action="${ctx }/login">
 					<h4 class="no-margins">用户登录：</h4>
-					<p class="m-t-md">登录到${sysname }后台</p>
+					<p class="m-t-md">登录到${sysname}后台</p>
 					<input type="text" name="usrn" class="form-control uname"
 						placeholder="用户名" /> 
 					<input type="password" name="usrp"
@@ -63,14 +63,15 @@
 						id="img_captcha" src="${ctx }/captchacode" alt="验证码,看不到请点击刷新."
 						onclick="reloadCaptcha()" />
 					 <a href="javascript:reloadCaptcha()"
-						class="text-warning">换验证码</a> <a href="" class="text-danger">忘记密码</a><!-- 忘记密码根据您的需要请自行开发 -->
+						class="text-warning">换验证码</a> <a href="" class="text-danger">忘记密码</a>
+					    <!-- 忘记密码根据您的需要请自行开发 -->
 					<button type="submit" class="btn btn-success btn-block">登录</button>
 				</form>
 			</div>
 		</div>
 		<div class="signup-footer ">
 			<!-- 版权信息 -->
-			<div class="pull-right">${copyright }</div>
+			<div class="pull-right">${copyright}</div>
 		</div>
 	</div>
 </body>
